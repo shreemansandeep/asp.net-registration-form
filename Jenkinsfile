@@ -5,7 +5,7 @@ pipeline{
       
       stage("Git Checkout"){
         steps{
-              git credentialsId: 'GitHubCred', url: 'https://github.com/shreemansandeep/ASP.NET-MVC.git'
+              git credentialsId: 'GitHubCred', url: 'https://github.com/shreemansandeep/asp.net-registration-form.git'
         }
       }
       
