@@ -9,7 +9,7 @@ pipeline{
         }
       }
       
-      stage("Docker Build image and Tag"){
+      stage("Restore"){
             steps{
                   bat "dotnet restore"
             }
