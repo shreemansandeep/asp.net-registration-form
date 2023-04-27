@@ -8,7 +8,7 @@ COPY *.csproj ./
 
 # ARG HTTP_PROXY="http://username:password@proxy.example.com:8080"
 
-USER administrator
+
 RUN dotnet restore
 
 # Copy everything else and build
