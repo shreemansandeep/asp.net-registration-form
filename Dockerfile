@@ -1,35 +1,20 @@
-# Set the base image
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
-
-# Set the working directory
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copy the project file
-COPY *.csproj ./
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["WebApplication1.csproj", ""]
+COPY ["../ClassLibrary1/ClassLibrary1.csproj", "../ClassLibrary1/"]
+RUN dotnet restore "./WebApplication1.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "WebApplication1.csproj" -c Release -o /app/build
 
-# Restore the project dependencies
-RUN dotnet restore
+FROM build AS publish
+RUN dotnet publish "WebApplication1.csproj" -c Release -o /app/publish
 
-# Copy the entire project folder to the container
-COPY . ./
-
-# Publish the application
-RUN dotnet publish -c Release -o out
-
-# Set the final base image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
-
-# Set the working directory
+FROM base AS final
 WORKDIR /app
-
-# Copy the published output from the build container to the final container
-COPY --from=build-env /app/out .
-
-# Set the environment variable for ASP.NET Core to use HTTPS
-ENV ASPNETCORE_URLS=https://+:443
-
-# Expose port 443 for HTTPS traffic
-EXPOSE 443
-
-# Start the application
-ENTRYPOINT ["dotnet", "asp.net-registration-form.dll"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "WebApplication1.dll"]
