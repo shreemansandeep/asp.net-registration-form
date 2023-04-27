@@ -15,7 +15,6 @@ RUN dotnet restore
 
 COPY . ./
 
-USER administrator
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
